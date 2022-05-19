@@ -20,12 +20,14 @@
     <p>{{ post.content }}</p>
     <a href="/posts/edit/{{ post.id }}"><button>Editar</button></a>
     <a href="/posts/delete/{{ post.id }}"><button>Borrar</button></a>
-    <form action="" method="POST">
+    <form action="/posts/comment/{{ post.id }}" method="POST">
         {% csrf_token %}   
         <textarea name="com_content" placeholder="Comenta"></textarea>
         <button>comentar</button>
-        {% for comment in comments  %}
-        <p>{{ comment.author }}</p>:<p>{{ comment.body }}</p>
-        {% endfor %}
     </form>
+    <section class="comments">
+        {% for comment in comments %}
+            <p>user: {{ comment.author }} -Comment: {{ comment.body }} </p>
+        {% endfor %}
+    </section>
 </html>
