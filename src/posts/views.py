@@ -21,8 +21,9 @@ def posts(request):
 
 def post(request, id):
     post = Post.objects.get(id=id)
+    comments = Comment.objects.filter(post=id)
 
-    return render(request, 'posts/post.html', {'post':post})
+    return render(request, 'posts/post.html', {'post':post, 'comments': comments})
 
 
 def create_post(request):
@@ -73,7 +74,7 @@ def create_comment(request, id):
 
     if request.method == 'POST':
         body = request.POST['com_content']
-        username = request.user.pk
+        username = request.user.username
         if body:
             new_comment = Comment.objects.create(
                 author = username,
@@ -89,4 +90,4 @@ def create_comment(request, id):
         'new_comment':new_comment,
     })
 
- 
+
