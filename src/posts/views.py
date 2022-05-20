@@ -4,10 +4,12 @@ from django.contrib.auth.models import User
 from django.urls import is_valid_path
 from .models import Post, Comment
 
+# home
 def home(request):
     return render(request, 'home.html')
 
 
+# listamos posts
 def posts(request):
     posts = Post.objects.all().order_by("-created_date", "-id")   # SELECT * FROM posts
 
@@ -20,12 +22,12 @@ def posts(request):
 
 
 def post(request, id):
-    post = Post.objects.get(id=id)
-    comments = Comment.objects.filter(post=id)
+    post = Post.objects.get(id=id) # pedimos el id de cado post
+    comments = Comment.objects.filter(post=id)# filtramos los comentarios de cada post
 
     return render(request, 'posts/post.html', {'post':post, 'comments': comments})
 
-
+# creamos el post
 def create_post(request):
     if request.method == "POST":
         post = Post(
@@ -42,7 +44,7 @@ def create_post(request):
 
     return render(request, 'posts/create.html')
 
-
+# eidtamos posts
 def edit_post(request, id):
     post = Post.objects.get(id=id)
     if request.method == "POST":
@@ -59,7 +61,7 @@ def edit_post(request, id):
 
     return render(request, 'posts/edit.html', {'post': post})
 
-
+# borramos posts
 def delete_post(request,id):
     post = Post.objects.get(id=id)
 
@@ -67,6 +69,7 @@ def delete_post(request,id):
     return redirect("/posts")
     
  
+# creamos comentarios 
 def create_comment(request, id):
     post = get_object_or_404(Post,pk=id)
     comments = post.comments.filter(activate=True)

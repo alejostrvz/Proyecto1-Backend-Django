@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,29 +6,77 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Post</title>
+    {% comment %} <style>
         img{
             width: 100%;
         }
-    </style>
+    </style> {% endcomment %}
 </head>
 <body>
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.author.username }}</p>
-    <p>{{ post.author.first_name }} {{ post.author.last_name }}</p>
-    <img src="{{ post.img }}">
-    <p>{{ post.content }}</p>
-    <a href="/posts/edit/{{ post.id }}"><button>Editar</button></a>
-    <a href="/posts/delete/{{ post.id }}"><button>Borrar</button></a>
-    <form action="/posts/comment/{{ post.id }}" method="POST">
-        {% csrf_token %}   
-        <textarea name="com_content" placeholder="Comenta"></textarea>
-        <button>comentar</button>
-    </form>
-    <section class="comments">
-        {% for comment in comments %}
-            <p>user: {{ comment.author }} -Comment: {{ comment.body }} </p>
-        {% endfor %}
-    </section>
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <div class="container-fluid">
+        <a class="navbar-brand" href="/posts"><img src="{% static './imgs/imagen_logo_tzuzul_code.png' %}"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link active "  id="nav-id" aria-current="page" href="/" style="color: white;font-size: 25px;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Home</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/logout"  id="nav-id" style="color: white;font-size: 25px;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Cerrar sesión</a>
+                </li>
+            {% else %}  
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/login"  id="nav-id" style="color: white;font-size: 25px;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Inicio de sesión</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/signup"  id="nav-id" style="color: white;font-size: 25px;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Registrate</a>
+                </li> 
+            {% endif %}
+            </ul>
+        </div>
+        </div>
+    </nav>
+
+
+    <main class="container-grid">
+        <section class = 'container-grid-left'>
+        <article class = 'all-info-container'>
+            <div class="info-container">
+                <img class="" src="{{ post.img }}">
+                <h1 class="">{{ post.title }}</h1>
+                <h5 class="">Publicado por: {{ post.author.username }}</h5><p class="card-text"> desde: {{ post.created_date }}</p>
+                <p class="">{{ post.content }}</p>
+            </div>
+            {% if user.is_authenticated %}
+                <a href="/posts/edit/{{ post.id }}"><button>Editar</button></a>
+                <a class="delete_confirmation" onclick="deleteConfirmation({{ post.id }})" href="/posts/delete/{{ post.id }}" action="/posts"><button>borrar</button></a>
+            {% endif %}
+        </article>
+        </section>
+        <section class="comment-container">
+                {% if user.is_authenticated %}
+                    <form action="/posts/comment/{{ post.id }}" method="POST" class = 'form-textarea'>
+                        {% csrf_token %}   
+                        <textarea name="com_content" placeholder="Comenta"></textarea>
+                        <button>comentar</button>
+                    </form>
+                    <div class="comment-user-container">
+                        {% else %}
+                            <p style="color: white;">Debes <a href="/auth/login">Iniciar sesión</a> o <a href="/auth/signup">Registrarte </a>para poder comentar</p>
+                        {% endif %}
+                        {% for comment in comments %}
+                            <p class="comment-user-textarea">usuario: {{ comment.author }} a comentado: {{ comment.body }} </p>
+                        {% endfor %}
+                    </div>
+        </section>
+    </main>
+    {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> {% endcomment %}
+    <script src="{% static 'js/posts.js' %}"> </script>
 </html>

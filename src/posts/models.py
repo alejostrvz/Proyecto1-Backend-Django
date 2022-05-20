@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
-
+# Modelo de Post
 class Post(models.Model):
     title = models.CharField(max_length=50, verbose_name="Title")
     description = models.CharField(max_length=255)
@@ -23,6 +23,7 @@ class Post(models.Model):
     def get_url(self):
         return reverse('posts:post_detail', args=[self.pk])
 
+# Modelo de comentarios 
 class Comment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE, related_name='comments', null=True)
     author = models.CharField(max_length=50)

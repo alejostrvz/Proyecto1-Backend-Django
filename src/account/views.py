@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 # Create your views here.
-
+# Funcion de login
 def user_login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -16,7 +16,7 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user) # Agregar al usuario a la sesión
-                return redirect("/")
+                return redirect("/posts/")
             else:
                 return render(request, 'auth/login.html', {
                     "error": True,
@@ -25,12 +25,12 @@ def user_login(request):
         else:
             return render(request, 'auth/login.html', {
                 "error": True,
-                "message": "Invalid credentials"
+                "message": "El username o contraseña no coinciden "
             })
 
     return render(request, 'auth/login.html')
 
-
+# Funcion de registro 
 def user_signup(request):
     if request.method == "POST":
         first_name = request.POST['first_name']
@@ -43,7 +43,7 @@ def user_signup(request):
         if password_confirmation!=password:
             return render(request, "auth/signup.html", {
                 "error": True,
-                "message": "Password and password confirmation does not match"
+                "message": "Las contraseñas no coinciden"
             })
 
         try:
@@ -51,18 +51,18 @@ def user_signup(request):
             new_user.first_name = first_name
             new_user.last_name = last_name
             new_user.save()
-            login(request,new_user)
-            return redirect("/")
+            #login(request,new_user)
+            return redirect("/auth/login")
 
         except IntegrityError:
             return render(request,"auth/signup.html",{
                 "error":True,
-                "message": "Email or username already registered"
+                "message": "El usurio o Email usado ya existen"
             })
 
     return render(request, "auth/signup.html")
 
-
+# Funcion de logout
 def user_logout(request):
     if request.user.is_authenticated:
         logout(request)
